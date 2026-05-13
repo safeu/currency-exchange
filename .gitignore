@@ -1,0 +1,8 @@
+target/
+currency.db
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+data/dummy.csv
