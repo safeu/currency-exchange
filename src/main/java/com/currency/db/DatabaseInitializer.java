@@ -7,7 +7,7 @@ Script Purpose:
     with the sqlite database, magsstart ung program to create a
     new table for that database (IF the table does not exist)
 Notes:
-    - Only 
+    - Only 1 table was created "exchange_rates"
 ================================================================
 */
 

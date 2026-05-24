@@ -29,7 +29,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,21 +57,18 @@ public class ExchangeRateDAO {
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, currencyCode);
             stmt.setString(2, date);
-
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("rate");
             }
-
         } catch (SQLException e) {
             System.out.println("Error getting rate: " + e.getMessage());
         }
-
         return -1;
     }
+    
     public static boolean isEmpty() {
         String sql = "SELECT COUNT(*) FROM exchange_rates";
         try (Connection conn = DatabaseConnection.getConnection();

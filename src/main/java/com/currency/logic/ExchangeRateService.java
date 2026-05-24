@@ -15,8 +15,10 @@ Notes:
 
 package com.currency.logic;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import com.currency.db.ExchangeRateDAO;
-import java.io.*;
 
 public class ExchangeRateService {
 
@@ -25,6 +27,7 @@ public class ExchangeRateService {
             String line;
             boolean firstLine = true;
 
+            //magloloop as long as hindi null/empty ung row
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
                     firstLine = false;
