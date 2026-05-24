@@ -94,6 +94,7 @@ Subsequent runs will skip the import and load instantly.
 ---
 
 ## Project Structure
+```
 CurrencyVATSystem/
 ├── src/main/java/com/currency/
 │   ├── Main.java                        # Entry point — initializes DB, loads CSV, launches UI
@@ -112,7 +113,7 @@ CurrencyVATSystem/
 │   └── bsp_rates.csv                    # Exchange rate data (not included, see Setup)
 ├── pom.xml                              # Maven dependencies and build configuration
 └── README.md
-
+```
 ---
 
 ## Dependencies
