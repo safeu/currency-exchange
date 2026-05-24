@@ -13,19 +13,50 @@ Notes:
 
 package com.currency.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+
 import com.currency.db.ExchangeRateDAO;
 import com.currency.logic.CurrencyConverter;
 import com.currency.logic.VATCalculator;
+import static com.currency.ui.AppConstants.ACCENT;
+import static com.currency.ui.AppConstants.ACCENT_HOVER;
+import static com.currency.ui.AppConstants.BG_CARD;
+import static com.currency.ui.AppConstants.BG_DARK;
+import static com.currency.ui.AppConstants.BG_INPUT;
+import static com.currency.ui.AppConstants.BORDER_COLOR;
+import static com.currency.ui.AppConstants.CURRENCY_NAMES;
+import static com.currency.ui.AppConstants.SUCCESS;
+import static com.currency.ui.AppConstants.TEXT_MUTED;
+import static com.currency.ui.AppConstants.TEXT_PRIMARY;
+import static com.currency.ui.AppConstants.WARNING;
+import static com.currency.ui.AppConstants.WINDOW_HEIGHT;
+import static com.currency.ui.AppConstants.WINDOW_WIDTH;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
-import static com.currency.ui.AppConstants.*;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-import java.awt.*;
-import java.time.LocalDate;
-import java.util.List;
 
 public class MainWindow extends JFrame {
 
@@ -167,8 +198,8 @@ public class MainWindow extends JFrame {
         vatCard.add(makeFieldLabel("VAT Mode"));
         vatCard.add(Box.createVerticalStrut(4));
 
-        vatExclusive = makeRadioButton("VAT Exclusive — add 12% on top");
-        vatInclusive = makeRadioButton("VAT Inclusive — price already has VAT");
+        vatExclusive = makeRadioButton("No VAT — show base amount only");
+        vatInclusive = makeRadioButton("With VAT — add 12% on top");
         vatExclusive.setSelected(true);
         final ButtonGroup vatGroup = new ButtonGroup();
         vatGroup.add(vatExclusive);
@@ -233,7 +264,7 @@ public class MainWindow extends JFrame {
             new EmptyBorder(8, 0, 0, 0)
         ));
 
-        vatSection.add(makeResultLabel("Base Amount (PHP)"));
+        vatSection.add(makeResultLabel("Amount (PHP)"));
         baseAmountLabel = makeResultValue();
         vatSection.add(baseAmountLabel);
 
@@ -339,7 +370,6 @@ public class MainWindow extends JFrame {
             final double amount = Double.parseDouble(amountField.getText().trim());
             final String from = getCodeFromDisplay((String) fromCurrency.getSelectedItem());
             final String to = getCodeFromDisplay((String) toCurrency.getSelectedItem());
-            final boolean inclusive = vatInclusive.isSelected();
 
             if (from.equals(to)) {
                 JOptionPane.showMessageDialog(this, "From and To currencies cannot be the same.",
@@ -380,12 +410,11 @@ public class MainWindow extends JFrame {
 
             if (phpInvolved) {
                 final double inPHP = CurrencyConverter.convert(from, "PHP", amount, date);
-                final double vatAmount = VATCalculator.getVATAmount(inPHP, inclusive);
-                final double baseAmount = VATCalculator.getBaseAmount(inPHP, inclusive);
-                final double total = VATCalculator.getTotal(inPHP, inclusive);
+                final double vatAmount = vatInclusive.isSelected() ? VATCalculator.getVATAmount(inPHP) : 0;
+                final double total = vatInclusive.isSelected() ? VATCalculator.getTotal(inPHP) : inPHP;
 
-                baseAmountLabel.setText(String.format("₱ %,.2f", baseAmount));
-                vatAmountLabel.setText(String.format("₱ %,.2f", vatAmount));
+                baseAmountLabel.setText(String.format("₱ %,.2f", inPHP));
+                vatAmountLabel.setText(vatInclusive.isSelected() ? String.format("₱ %,.2f", vatAmount) : "N/A");
                 totalLabel.setText(String.format("₱ %,.2f", total));
             }
 
